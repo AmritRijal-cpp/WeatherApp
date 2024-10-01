@@ -19,19 +19,16 @@ export async function fetchCurrentTemp(location: string = 'Itahari', tempUnit: s
   }
 }
 
-export async function fetchAutoCom(searchQuery: string, setSuggestion: React.Dispatch<React.SetStateAction<{ id: string, name: string, country: string }[]>>) {
-  if (searchQuery.length > 1) {
+export async function fetchAutoCom(text: string, setSuggestion: React.Dispatch<React.SetStateAction<{ id: string, name: string, country: string }[]>>) {
+  console.log(text);
+  
+  if (text.length > 2) {
     try {
-      const response = await fetch(`${baseURL}/search.json?key=${API_KEY}&q=${searchQuery}`);
+      const response = await fetch(`${baseURL}/search.json?key=${API_KEY}&q=${text}`);
       if (!response.ok) {
         throw new Error("Error occured during fetching location");
       }
-
-
       const data = await response.json();
-
-
-
       setSuggestion(data);
     } catch (error) {
       console.error(error);
@@ -48,7 +45,6 @@ export async function testQuery() {
       throw new Error("Error occured during fetching location");
     }
     const data = await response.json();
-     console.log(data);
   } catch (error) {
     console.error(error);
   }
