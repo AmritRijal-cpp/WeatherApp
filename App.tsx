@@ -1,30 +1,13 @@
-import { Dimensions, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { fetchCurrentTemp, fetchAutoCom, testQuery } from './constant';
-const screenHeight = Dimensions.get('window').height;
-const screenWidth = Dimensions.get('window').width;
+import { fetchCurrentTemp, fetchAutoCom } from './constants/CustomFunctions';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import * as Font from 'expo-font';
-// import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
+import { ThemedText } from './constants/ThemedText';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-
-  const [fonts, setFonts] = useState<boolean>(false);
-  useEffect(()=> {
-    async function loadFonts() {
-      await Font.loadAsync({
-        'Noto-Sans-Light': require('./assets/fonts/NotoSans-Light.ttf'),
-        // 'Noto-Sans-Regular': require('./assets/fonts/'),
-        // 'Noto-Sans-Bold': require('./assets/fonts/'),
-        // 'Noto-Sans-SemiBold': require('./assets/fonts/'),
-        // 'Noto-Sans-ExtraBold': require('./assets/fonts/')
-      });
-      setFonts(true);
-      
-    }
-    loadFonts();
-  })
-
 
   const [tempUnit, setTempUnit] = useState<string>("temp_c");
   const [currentTemp, setCurrentTemp] = useState<number | undefined>(undefined);
@@ -54,6 +37,8 @@ export default function App() {
     return () => clearTimeout(timeout);
   }, [searchQuery]);
 
+
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.searchBarContainer}>
@@ -75,7 +60,7 @@ export default function App() {
                       setSearchBar(false);
                     }}>
                     <View style={styles.row}>
-                      <Text style={{ fontFamily: 'NotoSans-Regular', fontSize:32 }} key={sug.id}>{sug.name}, {sug.country}</Text>
+                      <ThemedText style={{ fontSize: 32 }} key={sug.id}>{sug.name}, {sug.country}</ThemedText>
                     </View>
                   </Pressable>
                 ))}
@@ -95,20 +80,22 @@ export default function App() {
         }
       </View>
       <View style={styles.currentContainer}>
-        <Text style={styles.temp}>
-          {currentTemp}
-          <Text style={{ fontWeight: '100' }}>°</Text>
-          <Text style={{ fontWeight: '100' }}>
+        <View style={styles.temp}>
+          <ThemedText type='default' style={{ fontSize: 64,}}>
+            {currentTemp}
+          </ThemedText>
+          <ThemedText type='thin' style={{ fontSize: 64, fontWeight: '100' }}>°</ThemedText>
+          <ThemedText style={{ fontSize: 64, fontWeight: '100' }}>
             {tempUnit == 'temp_c' ? 'c' : 'f'}
-          </Text>
-        </Text>
-        <Text style={{ fontSize: 32, }}>{location}</Text>
+          </ThemedText>
+        </View>
+        <ThemedText style={{ fontSize: 32, textAlign: 'center' }}>{location}</ThemedText>
       </View>
       <View style={styles.hourlyContainer}>
-        <Text style={styles.text}>For Hourly</Text>
+        <ThemedText style={styles.text}>For Hourly</ThemedText>
       </View>
       <View style={styles.dailyContainer}>
-        <Text style={styles.text}>For Daily</Text>
+        <ThemedText style={styles.text}>For Daily</ThemedText>
       </View>
     </View>
   );
@@ -172,7 +159,8 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   temp: {
-    fontSize: 64,
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   text: {
     color: '#fff',
